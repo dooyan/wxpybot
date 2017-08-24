@@ -14,6 +14,7 @@ from utils.wxplugins import *
 # 初始化日志
 logfile.console_and_logfile('./logs/testrslog')
 
+
 # 初始化插件, 由于初始化bot需要插件回掉，插件回掉要引用bot，无法两全
 addPath(os.path.join(os.path.split(__file__)[0], 'plugin'))
 initplugins = ['admin', 'mbaotaochat', 'heartbeat', 'picsaver']
@@ -29,6 +30,7 @@ def qr_callback(uuid, status, qrcode):
         f.write(qrcode)
     os.system('mspaint %s' % fname)
     pass
+
 
 # 登陆回掉
 def login_callback():
@@ -62,7 +64,7 @@ bot.enable_puid(wxbot_puid_file)
 def plugins_plug(name):
     try:
         modImport(name)
-        modCall(name, 'onPlug', kargs={'bot':bot})
+        modCall(name, 'onPlug', kargs={'bot': bot})
         logging.info('plugins %s onPlug finish' % name)
     except Exception as e:
         import traceback
@@ -73,7 +75,7 @@ def plugins_plug(name):
 
 def plugins_unplug(name):
     try:
-        modCall(name, 'onUnplug', kargs={'bot':bot})
+        modCall(name, 'onUnplug', kargs={'bot': bot})
         modRemove(name)
         logging.info('plugins %s onUnplug finish' % name)
     except Exception as e:
@@ -88,6 +90,8 @@ bot.plugins_list = modList
 
 
 intervaltimer = None
+
+
 def Intervalpluginscall(botcore):
     logging.debug('Intervalpluginscall check %d' % time.time())
     try:
@@ -98,14 +102,16 @@ def Intervalpluginscall(botcore):
     global intervaltimer
     if not intervaltimer:
         del intervaltimer
-    intervaltimer = threading.Timer(60.0*5, Intervalpluginscall, kwargs={'botcore':botcore})
+    intervaltimer = threading.Timer(60.0*5, Intervalpluginscall, kwargs={'botcore': botcore})
     intervaltimer.start()
 
-intervaltimer = threading.Timer(60.0*5, Intervalpluginscall, kwargs={'botcore':bot})
+
+intervaltimer = threading.Timer(60.0*5, Intervalpluginscall, kwargs={'botcore': bot})
 intervaltimer.start()
 
 # 所有消息回掉
 anymsgtype = [TEXT,MAP,CARD,NOTE,SHARING,PICTURE,RECORDING,ATTACHMENT,VIDEO,FRIENDS ]
+
 @bot.register(msg_types=anymsgtype, except_self=False)  # , run_async=False
 def message_all_plugins(msg):
     try:
